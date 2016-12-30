@@ -1,22 +1,22 @@
 import axios from 'axios';
-var querystring = require('querystring');
+import querystring = require('querystring');
 
 export class Requester {
+    private _driver;
+    private _reqInterceptor;
+    private _resInterceptor;
+
 	constructor(host) {
 		this._driver = axios.create({ baseURL: host });
 	}
 
-	get driver() {
-		return this._driver;
-	}
-
 	set header(header) {
-		this.driver.defaults.headers[header.name] = header.value;
+		this._driver.defaults.headers[header.name] = header.value;
 	}
 
 	debug(on) {
 		if (on) {
-			this.reqInterceptor = this.driver.interceptors.request.use(function (config) {
+			this._reqInterceptor = this._driver.interceptors.request.use(function (config) {
 				console.log("----- Request -----");
 				console.log(config.method, config.url);
 				console.log(config.headers);
@@ -26,7 +26,7 @@ export class Requester {
 			}, function (error) {
 				return Promise.reject(error);
 			});
-			this.resInterceptor = this.driver.interceptors.response.use(function (response) {
+			this._resInterceptor = this._driver.interceptors.response.use(function (response) {
 				console.log("----- Response -----");
 				console.log(response.headers);
 				console.log(response.data);
@@ -36,17 +36,17 @@ export class Requester {
 				return Promise.reject(error);
 			});
 		} else {
-			if (this.reqInterceptor) this.driver.interceptors.request.eject(this.reqInterceptor);
-			if (this.resInterceptor) this.driver.interceptors.response.eject(this.resInterceptor);
+			if (this._reqInterceptor) this._driver.interceptors.request.eject(this._reqInterceptor);
+			if (this._resInterceptor) this._driver.interceptors.response.eject(this._resInterceptor);
 		}
 		return this;
 	}
 
 	clearHeaders() {
-		this.driver.defaults.headers = {};
+		this._driver.defaults.headers = {};
 	}
 
-	stringify(form) {
+	static stringify(form) {
 		return querystring.stringify(form);
 	}
 }
