@@ -1,10 +1,10 @@
 {
-  "name": "mobq",
-  "version": "1.2.0",
+  "name": "qtestmanager-node",
+  "version": "1.0.0",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cpyle0819/mobq.git"
+    "url": "https://github.com/cpyle0819/qtestmanager-node"
   },
   "dependencies": {
     "axios": "^0.15.2",
