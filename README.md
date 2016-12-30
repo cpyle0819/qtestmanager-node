@@ -1,68 +1,80 @@
-# mobq
-NPM package for consuming the qTest API
+# qtestmanager-node
+A library to simplify the consumption of QA Symphony's qTest Manager API
 
 
 ## Installation
-`npm install --save mobq`
+`npm install --save qtestmanager-node`
 
 ## Updates
-### 1.2
-* THIS UPDATE WILL BREAK YOUR IMPLEMENTATION
-* Replaced API token in contructor with a login() method
-* Removed projectId from contructor, the `mobq` constructor only requires the host now
-* added a logout() method; qTest caps your number of sessions, needed a way to prevent that from happening, logout was needed anyways
-* added a setProjectId() method
-* updated how the driver is sent to the TestRun and TestExection objects to compensate for login changes
+### 1.0.0
+Initial release
 
 
-### 1.1.7
-* Change the default timeout to 10 seconds instead of 1
+## Usage
+`qtestmanager-node` offers a variety of ways to integrate with qTest Manager. 
+It is designed to be as light-weight, or full featured as needed.
 
-### 1.1.6
-* Add `addAttachment(name, contentType, base64String)` to allow uploading attachments to test execution
+### Authenticate
 
-### 1.1.5
-* Choose a suite and a test case, and mobq will automatically create a test run and execute it
-* Updated the submit calls for test runs and test executions to return promises instead of wrestling callbacks
-
-
-### Example
 ```javascript
-var MobQ = require('mobq').default;
+var QTMAuthenticator = require('qtestmananger-node').Authenticator;
+var authenticator = new QTMAuthenticator("https://yourhost.qtestnet.com");
 
-var mobq = new MobQ("https://host.qtestnet.com");
-mobq.setProjectId(projectId);
-
-// Credentials is a JSON object
-// with two properties: username, password
-// It returns a promise
-mobq.login(credentials).then((response) => {
-
-	// Create a new test run a cycle, suite, or release for a specific test case
-	mobq.newTestRun().inCycle(cycleId).forTest(testId).submit();
-	mobq.newTestRun().inSuite(suiteId).forTest(testId).submit();
-	mobq.newTestRun().inRelease(releaseId).forTest(testId).submit();
-
-
-	// Create a new execution for a test run
-	mobq.newTestExecution()
-		.inSuite(515894)
-		.forTest(5470717)
-		.withStatus("PASS")
-		.withStepStatus(1, "PASS") // optional
-		.withStepStatus(2, "FAIL")
-		.submit();
-
-}).catch((error) => {
-	console.log(error);
-})
+authenticator.login(username, password).then(function(accessToken) {
+	// do something with accessToken
+});
 ```
 
-Notes: 
-If `withStepStatus(...)` is used, it must be used for all steps,
-otherwise the test execution will fail.
-If it's never called, the test execution will show all steps as 'UNDEFINED'.
+### Upload XML Results
+```javascript
+var QTMFileUploader = require('qtestmananger-node').FileUploader;
+var fs = require('fs');
+var xml = fs.readFileSync(pathToXML, "utf-8");
 
-Make sure all of your test submissions have resovled before calling `mobq.logout()`
+var uploader = new QTMFileUploader("https://yourhost.qtestnet.com", token);
+// ID of the target project
+uploader.projectId = 12345;
 
+// Type of module to which you are uploading
+// The uploader uses QTM's search API. It is
+// the same syntax as the 'Data Query' in
+// Test Execution
+uploader.moduleType = "Test Cycle"
+
+// Id of the module to which you are uploading
+uploader.moduleId = 67890;
+
+// Upload results
+uploader.uploadJUnitResults(xml).then((responses) => {
+	// handle responses from POSTed test executions
+    // and don't forget to call authenticator.logout()
+    // once you are done.
+});
+```
+
+### Execute a Test Run
+```javascript
+var QTMSaver = require('qtestmanager-node').Saver;
+var QTMLog = require('qtestmanager-node').AutomationTestLog;
+
+var saver = new QTMSaver("https://yourhost.qtestnet.com", token);
+var log = new QTMLog():
+
+// Create the log
+// The properties below are required
+log.projectId = 32495;
+log.testRunId = 7217978;
+log.name = "Name";
+log.automationContent = "Automation Content";
+log.executionStartDate = new Date().toISOString();
+log.executionEndDate = new Date().toISOString();
+log.status = "PASS";
+
+// Save the new log
+saver.saveNew(log).then(function(response) {
+	// Handle response
+});
+```
+#### Disclaimer
+This package was developed by me  to make my life, and the life of my co-workers, a little easier. `qtestmanager-node` is not developed by, or associated with QASymphony.
 
