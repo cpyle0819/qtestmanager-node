@@ -1,10 +1,13 @@
 var gulp = require('gulp');
-var babel = require('gulp-babel');
+var ts = require('gulp-typescript');
 var del = require('del');
 
 gulp.task('default', ['copy'], () => {
-	return gulp.src("src/**/*.js")
-	.pipe(babel())
+	return gulp.src("src/**/*.ts")
+	.pipe(ts({
+		target: 'ES5',
+		allowJs: true
+	}))
 	.pipe(gulp.dest('build'));
 });
 
