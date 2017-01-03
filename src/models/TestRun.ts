@@ -4,8 +4,8 @@ import { Property } from './Property';
 
 export class TestRun extends QTestResource {
     testCase: TestCase;
+    testCaseId: number;
     properties: Property[];
-    name: string;
     testCaseVersionId: number;
     private _projectId: number;
 
@@ -23,18 +23,22 @@ export class TestRun extends QTestResource {
 	}
 
 	toJSON() {
-		let json = {
+		return {
 			links: this.links,
 			id: this.id,
 			name: this.name,
 			properties: this.properties,
 			test_case: this.testCase
 		};
-		return json;
 	}
 
 	static fromJSON(json: any) {
-	    return Object.create(TestRun, json);
+	    let tr = new TestRun();
+	    tr.properties = json.properties;
+	    tr.testCaseVersionId = json.test_case_version_id;
+	    tr.links = json.links;
+	    tr.id = json.id;
+        return tr;
 	}
 
 	_refreshURL() {

@@ -1,5 +1,3 @@
 export class JUnitTestCase {
-
-    constructor(id: number, status: string) {};
-
+    constructor(public id: number, public status: string) {};
 }

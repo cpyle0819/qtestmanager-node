@@ -6,7 +6,9 @@ gulp.task('default', ['copy'], () => {
 	return gulp.src("src/**/*.ts")
 	.pipe(ts({
 		target: 'ES5',
-		allowJs: true
+		allowJs: true,
+        typeRoots: ['typings/modules'],
+        lib: ["es2015", "dom"]
 	}))
 	.pipe(gulp.dest('build'));
 });

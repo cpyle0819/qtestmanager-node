@@ -5,23 +5,19 @@ export class QTestResource {
     id: number;
     updateURL: string;
     name: string;
-    private createURL: string;
+    private _createURL: string;
 
 	get createURL() {
-		if (this.createURL) {
-			return this.createURL
+		if (this._createURL) {
+			return this._createURL
 		} else {
 			throw new Error("URL for this resource is undefined. Are you sure you set all of the necessary properties?");
 		}
 	}
 
 	set createURL(url) {
-		this.createURL = url;
+		this._createURL = url;
 	}
-
-	get updateURL() {
-	    return this.updateURL;
-    }
 
 	getLink(linkName) {
 		for (let link of this.links) {

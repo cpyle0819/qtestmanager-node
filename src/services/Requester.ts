@@ -1,5 +1,4 @@
 import axios from 'axios';
-import querystring = require('querystring');
 
 export class Requester {
     private _driver;
@@ -50,6 +49,8 @@ export class Requester {
 	}
 
 	static stringify(form) {
-		return querystring.stringify(form);
+       return Object.keys(form).map(function(k) {
+            return encodeURIComponent(k) + '=' + encodeURIComponent(form[k])
+        }).join('&')
 	}
 }

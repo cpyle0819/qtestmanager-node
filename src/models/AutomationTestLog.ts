@@ -8,7 +8,6 @@ export class AutomationTestLog extends QTestResource {
 	executionEndDate: string;
 	automationContent: string;
 	attachments: Attachment[];
-	name: string;
     note: string;
     testCaseVersionId: number;
     testCaseId: number;
