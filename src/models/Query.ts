@@ -2,7 +2,7 @@ export class Query {
     objectType: string;
     fields: string[];
     query: string;
-    pageSize: string;
+    pageSize: number;
     page: number;
 
 
