@@ -6,10 +6,6 @@ export class TestCase extends QTestResource {
     automationContent: string;
     testCaseVersionId: number;
     properties: Property[];
-    links: Link[];
-    id: number;
-    name: string;
-    updateURL: string;
     private _projectId: number;
 
 	constructor() {

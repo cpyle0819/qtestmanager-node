@@ -6,6 +6,7 @@ import { QueryResult } from '../models/QueryResult';
 import { TestRun } from '../models/TestRun';
 
 export class Finder extends Requester {
+    private token: string;
 
 	constructor(host, token) {
 		super(host);
@@ -19,7 +20,7 @@ export class Finder extends Requester {
 		return this.driver.get(`/api/v3/projects/${projectId}/test-runs/${runId}?expand=testcase.teststep`)
 		.then((response) => {
 			let testCase = new TestCase();
-			return testCase.fromJSON(response.data.test_case);
+			return TestCase.fromJSON(response.data.test_case);
 		});
 
 	}
@@ -33,16 +34,16 @@ export class Finder extends Requester {
 	}
 
 	findTestRunsInModule(projectId, moduleId, moduleType) {
-		var query = new Query();
+		let query = new Query();
 		query.objectType = "test-runs";
 		query.query = `'${moduleType}' = '${moduleId}'`;
 
 		return this.search(projectId, query)
 		.then((queryResults) => {
 			let testRuns = [];
-			for (var queryResult of queryResults) {
-				for (var item of queryResult.items) {
-					var testRun = new TestRun().fromJSON(item);
+			for (let queryResult of queryResults) {
+				for (let item of queryResult.items) {
+					let testRun = TestRun.fromJSON(item);
 					testRun.testCaseId = testRun.getLink("test-case").match(/test-cases\/(\d+)/)[1];
 					testRuns.push(testRun);
 				}
@@ -67,7 +68,7 @@ export class Finder extends Requester {
 		let params = query.searchParams;
 		return this.driver.post(`/api/v3/projects/${projectId}/search${params}`, query.toJSON())
 		.then((response) => {
-			return new QueryResult().fromJSON(response.data);
+			return new QueryResult.fromJSON(response.data);
 		});
 	}
 
