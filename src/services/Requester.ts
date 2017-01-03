@@ -13,6 +13,9 @@ export class Requester {
 	set header(header) {
 		this._driver.defaults.headers[header.name] = header.value;
 	}
+	get driver() {
+	    return this._driver;
+    }
 
 	debug(on) {
 		if (on) {
