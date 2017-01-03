@@ -6,6 +6,9 @@ A library to simplify the consumption of QA Symphony's qTest Manager API
 `npm install --save qtestmanager-node`
 
 ## Updates
+### 1.0.1
+Convert src code to TypeScript
+
 ### 1.0.0
 Initial release
 
@@ -75,6 +78,15 @@ saver.saveNew(log).then(function(response) {
 	// Handle response
 });
 ```
+
+### Find all of the TestRuns in a Test Suite
+```javascript
+var finder = new Finder(host, token);
+finder.findTestRunsInModule(32495, 523880, "Test Suite").then((testRuns) => {
+    console.log(testRuns);
+})
+```
+
 #### Disclaimer
 This package was developed by me  to make my life, and the life of my co-workers, a little easier. `qtestmanager-node` is not developed by, or associated with QASymphony.
 
