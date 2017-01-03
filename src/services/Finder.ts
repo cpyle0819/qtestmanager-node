@@ -19,7 +19,6 @@ export class Finder extends Requester {
 	findTestCaseByRunId(projectId, runId) {
 		return this.driver.get(`/api/v3/projects/${projectId}/test-runs/${runId}?expand=testcase.teststep`)
 		.then((response) => {
-			let testCase = new TestCase();
 			return TestCase.fromJSON(response.data.test_case);
 		});
 
@@ -44,7 +43,7 @@ export class Finder extends Requester {
 			for (let queryResult of queryResults) {
 				for (let item of queryResult.items) {
 					let testRun = TestRun.fromJSON(item);
-					testRun.testCaseId = testRun.getLink("test-case").match(/test-cases\/(\d+)/)[1];
+					testRun.testCaseId = parseInt(testRun.getLink("test-case").match(/test-cases\/(\d+)/)[1]);
 					testRuns.push(testRun);
 				}
 			}
@@ -68,7 +67,7 @@ export class Finder extends Requester {
 		let params = query.searchParams;
 		return this.driver.post(`/api/v3/projects/${projectId}/search${params}`, query.toJSON())
 		.then((response) => {
-			return new QueryResult.fromJSON(response.data);
+			return new QueryResult(response.data);
 		});
 	}
 

@@ -8,12 +8,16 @@ export class QueryResult {
     readonly total: number;
     readonly items: QTestResource[];
 
+    constructor(json: any) {
+        this.links = json.links;
+        this.page = json.page;
+        this.pageSize = json.pageSize;
+        this.total = json.total;
+        this.items = json.items;
+    }
+
 	get pageCount() {
 		return QueryResult.numPages(this.total, this.pageSize);
-	}
-
-	static fromJSON(json) {
-		return Object.create(QueryResult, json);
 	}
 
 	private static numPages(t,s) {

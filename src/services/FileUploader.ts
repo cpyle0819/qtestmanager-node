@@ -2,7 +2,7 @@ import { AutomationTestLog } from '../models/AutomationTestLog';
 import { Finder } from './Finder';
 import { Saver } from './Saver';
 import { JUnitTestCase } from "../models/test_result_models/JUnitTestCase";
-import xml2js = require('xml2js');
+import * as xml2js from "xml2js";
 
 export class FileUploader {
     finder: Finder;
@@ -31,13 +31,13 @@ export class FileUploader {
 				let promises = [];
 				for (let testCase of jUnitTestCases) {
 					for (let testRun of testRuns) {
-						if (testCase.id == testRun.testCase.id) {
+						if (testCase.id == testRun.testCaseId) {
 							let log = new AutomationTestLog();
 							log.status = testCase.status;
 							log.executionStartDate = new Date().toISOString();
 							log.executionEndDate = new Date().toISOString();
-							log.name = "MobQ.FileUploader";
-							log.automationContent = "MobQ.FileUploader";
+							log.name = "QTM.FileUploader";
+							log.automationContent = "QTM.FileUploader";
 							log.projectId = this.projectId;
 							log.testRunId = testRun.id;
 							promises.push(this.saver.saveNew(log));
@@ -50,7 +50,6 @@ export class FileUploader {
 	}
 
 	parseXML(xml) {
-		//noinspection TypeScriptUnresolvedFunction
         let parser = new xml2js.Parser();
 		return new Promise(function(resolve, reject) {
 			parser.parseString(xml, function(err, json) {
@@ -69,9 +68,9 @@ export class FileUploader {
 		let suites = json.testsuites.testsuite;
 		for (let suite of suites) {
 			for (let testCase of suite.testcase) {
-                let id = json.$.name.match(/#(\d+)/)[1];
-                let status = json.failure == true ? "FAIL" : "PASS";
-				testCases.push(JUnitTestCase.fromJSON(testCase));
+                let id = testCase.$.name.match(/#(\d+)/)[1];
+                let status = testCase.failure == true ? "FAIL" : "PASS";
+				testCases.push(new JUnitTestCase(id, status));
 			}
 		}
 		return testCases;
