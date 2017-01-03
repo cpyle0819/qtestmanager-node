@@ -4,8 +4,8 @@ import { StepLog } from './StepLog';
 
 export class AutomationTestLog extends QTestResource {
 	status: string;
-	executionStartDate: Date;
-	executionEndDate: Date;
+	executionStartDate: string;
+	executionEndDate: string;
 	automationContent: string;
 	attachments: Attachment[];
 	name: string;
