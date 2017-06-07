@@ -1,4 +1,5 @@
 var FileUploader = require('../build/services/FileUploader').FileUploader;
+var JUnitTestCase = require('../build/models/test_result_models/JUnitTestCase').JUnitTestCase;
 var fu = new FileUploader(null, null);
 
 
@@ -58,12 +59,35 @@ var testJsonWithoutTestSuites = {
 
 describe('getJUnitTestCases', () => {
 
-    it('should not throw an error when the xml has no "testsuites"', () => {
-        expect(function() { return fu.getJUnitTestCases(testJsonWithoutTestSuites) }).not.toThrowError();
+    describe('when the xml has no "testsuites"', () => {
+
+        let json = testJsonWithoutTestSuites;
+
+        it('should not throw an error', () => {
+            let testFunc = () => {
+                return fu.getJUnitTestCases(json);
+            };
+            expect(testFunc).not.toThrowError();
+        });
+
+        it('should return an array of JUnitTestCase objects', () => {
+            expect(fu.getJUnitTestCases(json)[0] instanceof JUnitTestCase).toBeTruthy();
+        });
     });
 
-    it('should not throw an error when the xml has "testsuites"', () => {
-        expect(function() { return fu.getJUnitTestCases(testJsonWithTestSuites) }).not.toThrowError();
-    });
+    describe('when the xml has "testsuites"', () => {
 
+        let json = testJsonWithTestSuites;
+
+        it('should not throw an error', () => {
+            let testFunc = () => {
+                return fu.getJUnitTestCases(json);
+            };
+            expect(testFunc).not.toThrowError();
+        });
+
+        it('should return an array of JUnitTestCase objects', () => {
+            expect(fu.getJUnitTestCases(json)[0] instanceof JUnitTestCase).toBeTruthy();
+        });
+    });
 });
