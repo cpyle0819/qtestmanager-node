@@ -66,18 +66,30 @@ export class FileUploader {
 	}
 
 	getJUnitTestCases(json) {
-		let testCases = [];
-		let suites = json.testsuites.testsuite;
-		for (let suite of suites) {
-			for (let testCase of suite.testcase) {
-				let regex = this.testNameRegex || /#(\d+)/;
-				let idMatch = testCase.$.name.match(regex);
-				if (idMatch) {
-					let status = "failure" in testCase ? "FAIL" : "PASS";
-					testCases.push(new JUnitTestCase(idMatch[1], status));
-				}
-			}
-		}
-		return testCases;
+		if (json.testsuites) {
+            let testCases = [];
+            let suites = json.testsuites.testsuite;
+            for (let suite of suites) {
+                testCases = testCases.concat(this._getMatchingTestCases(suite.testcase));
+            }
+            return testCases;
+        }
+        else {
+            return this._getMatchingTestCases(json.testsuite.testcase);
+        }
 	}
+
+	_getMatchingTestCases(testCases) {
+	    let testCaseArray = [];
+        for (let testCase of testCases) {
+            let regex = this.testNameRegex || /#(\d+)/;
+            let idMatch = testCase.$.name.match(regex);
+            if (idMatch) {
+                let status = "failure" in testCase ? "FAIL" : "PASS";
+                testCaseArray.push(new JUnitTestCase(idMatch[1], status));
+            }
+        }
+
+        return testCaseArray;
+    }
 }
