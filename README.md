@@ -6,6 +6,9 @@ A library to simplify the consumption of QA Symphony's qTest Manager API
 `npm install --save qtestmanager-node`
 
 ## Updates
+### 1.0.7
+Publish the actual build instead of the src :eye-roll:
+
 ### 1.0.6
 Fix issue where XML files the did not contain a
 "testsuites" element were failing to parse
